@@ -9,7 +9,7 @@ class BluetoothTerminal {
    * @param {string} [receiveSeparator='\n'] - Receive separator
    * @param {string} [sendSeparator='\n'] - Send separator
    */
-  constructor(serviceUuid = 0xFFE0, characteristicUuid = 0xFFE1,
+  constructor(serviceUuid = 0x0001, characteristicUuid = 0x0003,
       receiveSeparator = '\n', sendSeparator = '\n') {
     // Used private variables.
     this._receiveBuffer = ''; // Buffer containing not separated data.
@@ -240,9 +240,9 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code120');
+    this._log('New Code456879');
     return navigator.bluetooth.requestDevice({
-      acceptAllDevices: true
+      filters: [{services: [this._serviceUuid]}]
     }).
         then((device) => {
           this._log('"' + device.name + '" bluetooth device selected');
@@ -272,17 +272,17 @@ class BluetoothTerminal {
     return device.gatt.connect().
         then((server) => {
           this._log('GATT server connected', 'Getting service...');
-          this._log(JSON.stringify(server));
-          return server.getPrimaryService();
+
+          return server.getPrimaryService(this._serviceUuid);
         }).
         then((service) => {
           this._log('Service found', 'Getting characteristic...');
-          this._log(JSON.stringify(service));
-          return service.getCharacteristic();
+
+          return service.getCharacteristic(this._characteristicUuid);
         }).
         then((characteristic) => {
           this._log('Characteristic found');
-          this._log(JSON.stringify(characteristic));
+
           this._characteristic = characteristic; // Remember characteristic.
 
           return this._characteristic;
