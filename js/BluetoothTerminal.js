@@ -248,7 +248,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 449');
+    this._log('New Code with UUID 485');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -393,7 +393,7 @@ class BluetoothTerminal {
     var t2 = event.target.value.getUint8(3);
     var t3 = event.target.value.getUint8(4);  
     this._log("New data");
-    var total = (t1 << 24 ) +  (t2 << 16 ) + (t3 << 8 ) + t4;
+    var total = (t << 24 ) +  (t1 << 16 ) + (t2 << 8 ) + t3;
      this._log ('Total' + total);   
     // let data = new DataView(event.target.value);
     // let foo = data.getUint8(0);
