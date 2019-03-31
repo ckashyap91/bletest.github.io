@@ -240,9 +240,9 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code');
+    this._log('New Code without UUID');
     return navigator.bluetooth.requestDevice({
-      filters: [{services: [this._serviceUuid]}]
+      acceptAllDevices: true
     }).
         then((device) => {
           this._log('"' + device.name + '" bluetooth device selected');
@@ -273,7 +273,7 @@ class BluetoothTerminal {
         then((server) => {
           this._log('GATT server connected', 'Getting service...');
 
-          return server.getPrimaryService(this._serviceUuid);
+          return server.getPrimaryService();
         }).
         then((service) => {
           this._log('Service found', 'Getting characteristic...');
@@ -282,11 +282,33 @@ class BluetoothTerminal {
         }).
         then((characteristic) => {
           this._log('Characteristic found');
-
-          this._characteristic = characteristic; // Remember characteristic.
+          log('Getting Characteristics...');
+              let queue = Promise.resolve();
+              services.forEach(service => {
+                queue = queue.then(_ => service.getCharacteristics().then(characteristics => {
+                  log('> Service: ' + service.uuid);
+                  characteristics.forEach(characteristic => {
+                    log('>> Characteristic: ' + characteristic.uuid + ' ' +
+                        this._getSupportedProperties(characteristic));
+                        this._characteristic = characteristic;
+                  });
+                }));
+              });          
+         // this._characteristic = characteristic; // Remember characteristic.
 
           return this._characteristic;
         });
+  }
+
+  
+  _getSupportedProperties(characteristic) {
+    let supportedProperties = [];
+    for (const p in characteristic.properties) {
+      if (characteristic.properties[p] === true) {
+        supportedProperties.push(p.toUpperCase());
+      }
+    }
+    return '[' + supportedProperties.join(', ') + ']';
   }
 
   /**
