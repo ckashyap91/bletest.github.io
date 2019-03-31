@@ -16,7 +16,7 @@ class BluetoothTerminal {
     this._maxCharacteristicValueLength = 20; // Max characteristic value length.
     this._device = null; // Device object cache.
     this._characteristic = null; // Characteristic object cache.
-    this._rxcharacteristic = null;
+
     // Bound functions used to add and remove appropriate event handlers.
     this._boundHandleDisconnection = this._handleDisconnection.bind(this);
     this._boundHandleCharacteristicValueChanged =
@@ -135,24 +135,24 @@ class BluetoothTerminal {
         this._maxCharacteristicValueLength);
 
     // Return rejected promise immediately if there is no connected device.
-    if (!this._rxcharacteristic) {
+    if (!this._characteristic) {
       return Promise.reject(new Error('There is no connected device'));
     }
-    this._log('Send Started');
+
     // Write first chunk to the characteristic immediately.
-    let promise = this._writeToCharacteristic(this._rxcharacteristic, chunks[0]);
+    let promise = this._writeToCharacteristic(this._characteristic, chunks[0]);
 
     // Iterate over chunks if there are more than one of it.
     for (let i = 1; i < chunks.length; i++) {
       // Chain new promise.
       promise = promise.then(() => new Promise((resolve, reject) => {
         // Reject promise if the device has been disconnected.
-        if (!this._rxcharacteristic) {
+        if (!this._characteristic) {
           reject(new Error('Device has been disconnected'));
         }
 
         // Write chunk to the characteristic and resolve the promise.
-        this._writeToCharacteristic(this._rxcharacteristic, chunks[i]).
+        this._writeToCharacteristic(this._characteristic, chunks[i]).
             then(resolve).
             catch(reject);
       }));
@@ -222,7 +222,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 457');
+    this._log('New Code with UUID 460');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -267,8 +267,7 @@ class BluetoothTerminal {
           this._log('Service found', 'Getting characteristic...');
           var ct;
           services.forEach(service => {
-              this._rxcharacteristic = service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
-               ct = service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e');
+               ct = service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
              });
           return ct;
         }).
@@ -374,7 +373,6 @@ class BluetoothTerminal {
    * @private
    */
   _writeToCharacteristic(characteristic, data) {
-    this._log('Send Started 1');
     return characteristic.writeValue(new TextEncoder().encode(data));
   }
 
