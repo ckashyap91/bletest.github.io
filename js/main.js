@@ -2,6 +2,7 @@
 const deviceNameLabel = document.getElementById('device-name');
 const connectButton = document.getElementById('connect');
 const disconnectButton = document.getElementById('disconnect');
+const sendDataButton = document.getElementById('sendData');
 const terminalContainer = document.getElementById('terminal');
 const sendForm = document.getElementById('send-form');
 const inputField = document.getElementById('input');
@@ -59,6 +60,13 @@ connectButton.addEventListener('click', () => {
         deviceNameLabel.textContent = terminal.getDeviceName() ?
             terminal.getDeviceName() : defaultDeviceName;
       });
+});
+
+// Bind event listeners to the UI elements.
+sendDataButton.addEventListener('click', () => {
+  terminal.sendNew().
+      then(() => logToTerminal("MyData", 'out')).
+      catch((error) => logToTerminal(error));
 });
 
 disconnectButton.addEventListener('click', () => {
