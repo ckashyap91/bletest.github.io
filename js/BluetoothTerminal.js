@@ -222,7 +222,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 9');
+    this._log('New Code with UUID 10');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -270,7 +270,7 @@ class BluetoothTerminal {
     }).
     then((characteristic) => {
       this._log('Characteristic found');
-
+      this._log(characteristic.uuid);
       this._characteristic = characteristic; // Remember characteristic.
 
       return this._characteristic;
