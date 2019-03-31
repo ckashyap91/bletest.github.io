@@ -265,13 +265,13 @@ class BluetoothTerminal {
         }).
         then((services) => {
           this._log('Characteristic found');
-          log('Getting Characteristics...');
+          this._log('Getting Characteristics...');
               let queue = Promise.resolve();
               services.forEach(service => {
                 queue = queue.then(_ => service.getCharacteristics().then(characteristics => {
-                  log('> Service: ' + service.uuid);
+                  this._log('> Service: ' + service.uuid);
                   characteristics.forEach(characteristic => {
-                    log('>> Characteristic: ' + characteristic.uuid + ' ' +
+                    this._log('>> Characteristic: ' + characteristic.uuid + ' ' +
                         this._getSupportedProperties(characteristic));
                         this._characteristic = characteristic;
                   });
