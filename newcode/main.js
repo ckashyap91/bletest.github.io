@@ -21,6 +21,7 @@ function readBatteryLevel() {
         return service.getCharacteristic('battery_level');
       })
       .then(function (characteristic) {
+        characteristic.writeValue(new TextEncoder().encode('Hi Hello'));
         return characteristic.readValue();
       })
       .then(function (value) {
