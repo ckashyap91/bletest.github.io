@@ -2,7 +2,10 @@
 const deviceNameLabel = document.getElementById('device-name');
 const connectButton = document.getElementById('connect');
 const disconnectButton = document.getElementById('disconnect');
-const sendDataButton = document.getElementById('sendData');
+//const sendDataButton = document.getElementById('sendData');
+const startPourButton = document.getElementById('startpour');
+const tapStopButton = document.getElementById('tapclosed');
+
 const terminalContainer = document.getElementById('terminal');
 const sendForm = document.getElementById('send-form');
 const inputField = document.getElementById('input');
@@ -63,11 +66,21 @@ connectButton.addEventListener('click', () => {
 });
 
 // Bind event listeners to the UI elements.
-sendDataButton.addEventListener('click', () => {
-  logToTerminal("Send My Data",'out');
-  terminal.sendNew().
-      then(() => logToTerminal("MyData", 'out')).
-      catch((error) => logToTerminal(error));
+// sendDataButton.addEventListener('click', () => {
+//   logToTerminal("Send My Data",'out');
+//   terminal.sendNew().
+//       then(() => logToTerminal("MyData", 'out')).
+//       catch((error) => logToTerminal(error));
+// });
+
+startPourButton.addEventListener('click', () => {
+  logToTerminal("Start Pouring",'out');
+  terminal._startPour();
+});
+
+tapStopButton.addEventListener('click', () => {
+  logToTerminal("Tap Stopped",'out');
+  terminal._tapClosed();
 });
 
 disconnectButton.addEventListener('click', () => {

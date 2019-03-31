@@ -10,17 +10,20 @@ class BluetoothTerminal {
    * @param {string} [sendSeparator='\n'] - Send separator
    */
   constructor(serviceUuid = 0x0001, characteristicUuid = 0x0003,
-      receiveSeparator = '\n', sendSeparator = '\n') {
+    receiveSeparator = '\n', sendSeparator = '\n') {
     // Used private variables.
     this._receiveBuffer = ''; // Buffer containing not separated data.
     this._maxCharacteristicValueLength = 20; // Max characteristic value length.
     this._device = null; // Device object cache.
     this._characteristic = null; // Characteristic object cache.
 
+    this._deviceId = null;
+    this._rfIdNumber = null;
+
     // Bound functions used to add and remove appropriate event handlers.
     this._boundHandleDisconnection = this._handleDisconnection.bind(this);
     this._boundHandleCharacteristicValueChanged =
-        this._handleCharacteristicValueChanged.bind(this);
+      this._handleCharacteristicValueChanged.bind(this);
 
     // Configure with specified parameters.
     this.setServiceUuid(serviceUuid);
@@ -33,7 +36,7 @@ class BluetoothTerminal {
    * Set number or string representing service UUID used.
    * @param {!(number|string)} uuid - Service UUID
    */
-  setServiceUuid(uuid) { 
+  setServiceUuid(uuid) {
     this._serviceUuid = uuid;
   }
 
@@ -41,7 +44,7 @@ class BluetoothTerminal {
    * Set number or string representing characteristic UUID used.
    * @param {!(number|string)} uuid - Characteristic UUID
    */
-  setCharacteristicUuid(uuid) {    
+  setCharacteristicUuid(uuid) {
     this._characteristicUuid = uuid;
   }
 
@@ -97,7 +100,7 @@ class BluetoothTerminal {
 
     if (this._characteristic) {
       this._characteristic.removeEventListener('characteristicvaluechanged',
-          this._boundHandleCharacteristicValueChanged);
+        this._boundHandleCharacteristicValueChanged);
       this._characteristic = null;
     }
 
@@ -113,29 +116,28 @@ class BluetoothTerminal {
     // Handle incoming data.
   }
 
-  sendNew(){
-    try{
-       var buffer = new ArrayBuffer(11) // array buffer for two bytes
-       var newData = new Uint8Array(buffer) // views the buffer as an array of 8 bit integers
-       var deviceId= 2000;
-        newData[0] = 21;
-        newData[1] = (deviceId & 0xFF000000) >> 24;
-        newData[2] = (deviceId & 0x00FF0000) >> 16;
-        newData[3] = (deviceId & 0x0000FF00) >> 8;
-        newData[4] = (deviceId & 0xFF0000FF);
-        newData[5] = 0;
-        newData[6] = 0;
-        newData[7] = 0;
-        newData[8] = 0;
-        newData[9] = 253;
-        newData[10] = 10;
+  sendNew() {
+    try {
+      var buffer = new ArrayBuffer(11) // array buffer for two bytes
+      var newData = new Uint8Array(buffer) // views the buffer as an array of 8 bit integers
+      var deviceId = 2000;
+      newData[0] = 21;
+      newData[1] = (deviceId & 0xFF000000) >> 24;
+      newData[2] = (deviceId & 0x00FF0000) >> 16;
+      newData[3] = (deviceId & 0x0000FF00) >> 8;
+      newData[4] = (deviceId & 0xFF0000FF);
+      newData[5] = 0;
+      newData[6] = 0;
+      newData[7] = 0;
+      newData[8] = 0;
+      newData[9] = 253;
+      newData[10] = 10;
       this._log("first sending new 1");
       this._characteristic.writeValue(newData);
       //this._log("first sent new");
       //this._characteristic.writeValue( new TextEncoder().encode(newData));  
-      this._log("first sent new"); 
-    }
-    catch(err){
+      this._log("first sent new");
+    } catch (err) {
       this._log(err);
     }
   }
@@ -158,7 +160,7 @@ class BluetoothTerminal {
 
     // Split data to chunks by max characteristic value length.
     const chunks = this.constructor._splitByLength(data,
-        this._maxCharacteristicValueLength);
+      this._maxCharacteristicValueLength);
 
     // Return rejected promise immediately if there is no connected device.
     if (!this._characteristic) {
@@ -179,8 +181,8 @@ class BluetoothTerminal {
 
         // Write chunk to the characteristic and resolve the promise.
         this._writeToCharacteristic(this._characteristic, chunks[i]).
-            then(resolve).
-            catch(reject);
+        then(resolve).
+        catch(reject);
       }));
     }
 
@@ -207,12 +209,12 @@ class BluetoothTerminal {
    */
   _connectToDevice(device) {
     return (device ? Promise.resolve(device) : this._requestBluetoothDevice()).
-        then((device) => this._connectDeviceAndCacheCharacteristic(device)).
-        then((characteristic) => this._startNotifications(characteristic)).
-        catch((error) => {
-          this._log(error);
-          return Promise.reject(error);
-        });
+    then((device) => this._connectDeviceAndCacheCharacteristic(device)).
+    then((characteristic) => this._startNotifications(characteristic)).
+    catch((error) => {
+      this._log(error);
+      return Promise.reject(error);
+    });
   }
 
   /**
@@ -228,11 +230,11 @@ class BluetoothTerminal {
     this._log('Disconnecting from "' + device.name + '" bluetooth device...');
 
     device.removeEventListener('gattserverdisconnected',
-        this._boundHandleDisconnection);
+      this._boundHandleDisconnection);
 
     if (!device.gatt.connected) {
       this._log('"' + device.name +
-          '" bluetooth device is already disconnected');
+        '" bluetooth device is already disconnected');
       return;
     }
 
@@ -258,15 +260,15 @@ class BluetoothTerminal {
       acceptAllDevices: true,
       optionalServices: [this._serviceUuid]
     }).
-        then((device) => {
-          this._log('"' + device.name + '" bluetooth device selected');
+    then((device) => {
+      this._log('"' + device.name + '" bluetooth device selected');
 
-          this._device = device; // Remember device.
-          this._device.addEventListener('gattserverdisconnected',
-              this._boundHandleDisconnection);
+      this._device = device; // Remember device.
+      this._device.addEventListener('gattserverdisconnected',
+        this._boundHandleDisconnection);
 
-          return this._device;
-        });
+      return this._device;
+    });
   }
 
   /**
@@ -284,29 +286,29 @@ class BluetoothTerminal {
     this._log('Connecting to GATT server...');
 
     return device.gatt.connect().
-        then((server) => {
-          this._log('GATT server connected', 'Getting service...');
+    then((server) => {
+      this._log('GATT server connected', 'Getting service...');
 
-          return server.getPrimaryServices();
-        }).
-        then((services) => {
-          this._log('Service found', 'Getting characteristic...');
-          var ct;
-          services.forEach(service => {
-               ct = service.getCharacteristic(this._characteristicUuid);
-             });
-          return ct;
-        }).
-        then((characteristic) => {
-          this._log('Characteristic found');
+      return server.getPrimaryServices();
+    }).
+    then((services) => {
+      this._log('Service found', 'Getting characteristic...');
+      var ct;
+      services.forEach(service => {
+        ct = service.getCharacteristic(this._characteristicUuid);
+      });
+      return ct;
+    }).
+    then((characteristic) => {
+      this._log('Characteristic found');
 
-          this._characteristic = characteristic; // Remember characteristic.
+      this._characteristic = characteristic; // Remember characteristic.
 
-          return this._characteristic;
-        });
+      return this._characteristic;
+    });
   }
 
-  
+
   _getSupportedProperties(characteristic) {
     let supportedProperties = [];
     for (const p in characteristic.properties) {
@@ -327,12 +329,12 @@ class BluetoothTerminal {
     this._log('Starting notifications...');
     this._log(characteristic);
     return characteristic.startNotifications().
-        then(() => {
-          this._log('Notifications started');
+    then(() => {
+      this._log('Notifications started');
 
-          characteristic.addEventListener('characteristicvaluechanged',
-              this._boundHandleCharacteristicValueChanged);
-        });
+      characteristic.addEventListener('characteristicvaluechanged',
+        this._boundHandleCharacteristicValueChanged);
+    });
   }
 
   /**
@@ -345,12 +347,12 @@ class BluetoothTerminal {
     this._log('Stopping notifications...');
 
     return characteristic.stopNotifications().
-        then(() => {
-          this._log('Notifications stopped');
+    then(() => {
+      this._log('Notifications stopped');
 
-          characteristic.removeEventListener('characteristicvaluechanged',
-              this._boundHandleCharacteristicValueChanged);
-        });
+      characteristic.removeEventListener('characteristicvaluechanged',
+        this._boundHandleCharacteristicValueChanged);
+    });
   }
 
   /**
@@ -362,11 +364,11 @@ class BluetoothTerminal {
     const device = event.target;
 
     this._log('"' + device.name +
-        '" bluetooth device disconnected, trying to reconnect...');
+      '" bluetooth device disconnected, trying to reconnect...');
 
     this._connectDeviceAndCacheCharacteristic(device).
-        then((characteristic) => this._startNotifications(characteristic)).
-        catch((error) => this._log(error));
+    then((characteristic) => this._startNotifications(characteristic)).
+    catch((error) => this._log(error));
   }
 
   /**
@@ -375,46 +377,141 @@ class BluetoothTerminal {
    * @private
    */
   _handleCharacteristicValueChanged(event) {
-    this._log("Data Received"); 
-    this._log(event.target.value.getUint8(0));
-    this._log(event.target.value.getUint8(1));
-    this._log(event.target.value.getUint8(2));
-    this._log(event.target.value.getUint8(3));
-    this._log(event.target.value.getUint8(4));
-    this._log(event.target.value.getUint8(5));
-    this._log(event.target.value.getUint8(6));
-    this._log(event.target.value.getUint8(7));
-    this._log(event.target.value.getUint8(8));
-    this._log(event.target.value.getUint8(9));
-    this._log(event.target.value.getUint8(10));
+    this._log("Data Received");
+    // this._log(event.target.value.getUint8(0));
+    // this._log(event.target.value.getUint8(1));
+    // this._log(event.target.value.getUint8(2));
+    // this._log(event.target.value.getUint8(3));
+    // this._log(event.target.value.getUint8(4));
+    // this._log(event.target.value.getUint8(5));
+    // this._log(event.target.value.getUint8(6));
+    // this._log(event.target.value.getUint8(7));
+    // this._log(event.target.value.getUint8(8));
+    // this._log(event.target.value.getUint8(9));
+    // this._log(event.target.value.getUint8(10));
     //this._log(event.target.value.getUint8(11));
+    var command = event.target.value.getUint8(0);
+    var handsakeCommand = event.target.value.getUint8(9);
     var t = event.target.value.getUint8(1);
     var t1 = event.target.value.getUint8(2);
     var t2 = event.target.value.getUint8(3);
-    var t3 = event.target.value.getUint8(4);  
-    this._log("New data");
-    var total = (t << 24 ) +  (t1 << 16 ) + (t2 << 8 ) + t3;
-    this._log ('Total' + total);   
+    var t3 = event.target.value.getUint8(4);
+    var total = (t << 24) + (t1 << 16) + (t2 << 8) + t3;
+    this._connectionDataReceive(command, total, handsakeCommand);
     // let data = new DataView(event.target.value);
     // let foo = data.getUint8(0);
     // this._log(foo);
     // var i = 0
-    const value = new TextDecoder().decode(event.target.value);  
-    for (const c of value) {
-      this._log("Data single" + c.charCodeAt(0));     
-      if(c.charCodeAt(0) == 21){
-        this._log("Yes First is 21");        
-      }
-      if (c === this._receiveSeparator) {
-        const data = this._receiveBuffer.trim();
-        this._receiveBuffer = '';
-        //this._log("Data Decoded Total Data" + data);
-        if (data) {
-          this.receive(data);
-        }
+    // const value = new TextDecoder().decode(event.target.value);
+    // for (const c of value) {      
+    //   if (c === this._receiveSeparator) {
+    //     const data = this._receiveBuffer.trim();
+    //     this._receiveBuffer = '';
+    //     //this._log("Data Decoded Total Data" + data);
+    //     if (data) {
+    //       this.receive(data);
+    //     }
+    //   } else {
+    //     this._receiveBuffer += c;
+    //   }
+    // }
+  }
+
+  _connectionDataReceive(command, data, handsakeCommand) {
+
+    if (handsakeCommand != 253) {
+      return;
+    }
+    if (command == 21) {
+      this._deviceId = data;
+      var deviceFound = false;
+      if (deviceFound) {
+        this._sendToDevice(command, 1);
       } else {
-        this._receiveBuffer += c;
+        this._sendToDevice(command, 0);
       }
+    } else if (command == 31) {
+      this._rfIdNumber = data;
+      this._log('RFID Number', data);
+      if (!this.checkRFIDExists()) {
+        this._log('RFID Number exists');
+        this._sendToDevice(command, 0);
+      }
+    } else if (command == 41) {
+      //Tap Number 1-Left 2-Right
+      this._sendToDevice(command, 1);
+    } else if (command == 42) {
+      //Volume of Tap in ml
+      var t = 2 * 1000;
+      this._sendToDevice(command, t);
+    } else if (command == 43) {
+      //Beer price in cent
+      var price = 1 * 100;
+      this._sendToDevice(command, price);
+    } else if (command == 44) {
+      //User Amount in cent
+      var at = 10 * 100;
+      this._sendToDevice(command, at);
+    } else if (command == 32) {
+      //Finish Pouring
+      //var lastAmount = data;
+      this._log('Finish Pouring Due to :' + command);
+    } else if (command == 33) {
+      //Finish Pouring
+      //var lastAmount = data;
+      this._log('Finish Pouring Due to :' + command);
+    } else if (command == 34) {
+      //Finish Pouring
+      //var lastAmount = data;
+      this._log('Finish Pouring Due to :' + command);
+    } else if (command == 35) {
+      //Finish Pouring
+      //var lastAmount = data;
+      this._log('Finish Pouring Due to :' + command);
+    } else if (command == 36) {
+      //Finish Pouring
+      var lastAmount1 = data;
+      this._log('Start Pouring Continue' + lastAmount1);
+    }
+    else if (command == 51) {
+      //Finish Pouring
+      var lastAmount = data;
+      this._log('Finish Pouring' + lastAmount);
+    }
+
+  }
+
+  _tapClosed() {
+    this._sendToDevice(45, 1);
+  }
+
+  _startPour() {
+    this._sendToDevice(31, 1);
+  }
+
+  checkRFIDExists() {
+    return true;
+  }
+  _sendToDevice(command, data) {
+    try {
+      var buffer = new ArrayBuffer(11) // array buffer for two bytes
+      var newData = new Uint8Array(buffer) // views the buffer as an array of 8 bit integers
+      newData[0] = command;
+      newData[1] = (data & 0xFF000000) >> 24;
+      newData[2] = (data & 0x00FF0000) >> 16;
+      newData[3] = (data & 0x0000FF00) >> 8;
+      newData[4] = (data & 0xFF0000FF);
+      newData[5] = 0;
+      newData[6] = 0;
+      newData[7] = 0;
+      newData[8] = 0;
+      newData[9] = 254;
+      newData[10] = 10;
+      this._log("Send Data to Device for command" + command);
+      this._characteristic.writeValue(newData);
+      this._log("Sent Data to Device for command" + command);
+    } catch (err) {
+      this._log(err);
     }
   }
 
