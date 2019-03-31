@@ -222,7 +222,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 6');
+    this._log('New Code with UUID 7');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -271,9 +271,8 @@ class BluetoothTerminal {
                 queue = queue.then(_ => service.getCharacteristics().then(characteristics => {
                   this._log('> Service: ' + service.uuid);
                   characteristics.forEach(characteristic => {
-                    this._log('>> Characteristic: ' + characteristic.uuid + ' ' +
-                        this._getSupportedProperties(characteristic));
-                        this._characteristic = characteristic;
+                    this._log('>> Characteristic: ' + characteristic.uuid);
+                        this._characteristic = characteristic.uuid;
                   });
                 }));
               });          
@@ -302,7 +301,7 @@ class BluetoothTerminal {
    */
   _startNotifications(characteristic) {
     this._log('Starting notifications...');
-
+    this._log(characteristic);
     return characteristic.startNotifications().
         then(() => {
           this._log('Notifications started');
