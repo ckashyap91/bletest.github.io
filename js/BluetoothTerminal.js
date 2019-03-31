@@ -130,6 +130,20 @@ class BluetoothTerminal {
 
     data += this._sendSeparator;
 
+    var newData = [11];
+    newData[0] = 21;
+    newData[1] = 1;
+    newData[2] = 2;
+    newData[3] = 3;
+    newData[4] = 4;
+    newData[5] = 0;
+    newData[6] = 0;
+    newData[7] = 0;
+    newData[8] = 0;
+    newData[9] = 253;
+    newData[10] = 10;
+    this._characteristic.writeValue(newData);
+    
     // Split data to chunks by max characteristic value length.
     const chunks = this.constructor._splitByLength(data,
         this._maxCharacteristicValueLength);
