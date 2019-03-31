@@ -248,7 +248,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 445');
+    this._log('New Code with UUID 449');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -388,16 +388,13 @@ class BluetoothTerminal {
     this._log(event.target.value.getUint8(9));
     this._log(event.target.value.getUint8(10));
     this._log(event.target.value.getUint8(11));
-    try{
-    var re = event.target.value;
-    this._log(re);
-    this._log((re.getUint8(1) << 24 ));
-    var total = (re.getUint8(1) << 24 ) +  (re.getUint8(2) << 16 ) + (re.getUint8(3) << 8 ) + re.getUint8(4);
-    this._log ('Total' + total);
-    }
-    catch(err){
-      this._log(err);
-    }
+    var t = event.target.value.getUint8(1);
+    var t1 = event.target.value.getUint8(2);
+    var t2 = event.target.value.getUint8(3);
+    var t3 = event.target.value.getUint8(4);  
+    this._log("New data");
+    var total = (t1 << 24 ) +  (t2 << 16 ) + (t3 << 8 ) + t4;
+     this._log ('Total' + total);   
     // let data = new DataView(event.target.value);
     // let foo = data.getUint8(0);
     // this._log(foo);
