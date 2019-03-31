@@ -355,8 +355,8 @@ class BluetoothTerminal {
     this._log("Data Received End");
     const value = new TextDecoder().decode(event.target.value);
     this._log("Data Decoded" + value.length);
-    this._log(typeof value);
-    for (const c of value) {
+    this._log(value.split(''));
+    for (const c of value.split('')) {
       this._log("Data single" + c);
       this._log(typeof c);
       if(c == 15){
