@@ -264,21 +264,19 @@ class BluetoothTerminal {
           return server.getPrimaryServices();
         }).
         then((services) => {
-          this._log('Characteristic found');
-          this._log('Getting Characteristics...');              
+          this._log('Service found', 'Getting characteristic...');
+          var ct;
           services.forEach(service => {
-                   service.getCharacteristics().then(characteristics => {
-                    this._log('> Service: ' + service.uuid);
-                    characteristics.forEach(characteristic => {
-                    this._log('>> Characteristic: ' + characteristic.uuid);
-                    this._characteristic = characteristic;
-                    return this._characteristic;
-                    });
-                });
-          });          
-         // this._characteristic = characteristic; // Remember characteristic.
+               ct = service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
+             });
+          return ct;
+        }).
+        then((characteristic) => {
+          this._log('Characteristic found');
 
-         
+          this._characteristic = characteristic; // Remember characteristic.
+
+          return this._characteristic;
         });
   }
 
