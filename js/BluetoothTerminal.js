@@ -240,9 +240,8 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code12');
+    this._log('New Code123');
     return navigator.bluetooth.requestDevice({
-      filters: [],
       acceptAllDevices: true
     }).
         then((device) => {
