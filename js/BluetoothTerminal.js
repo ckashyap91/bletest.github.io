@@ -388,10 +388,14 @@ class BluetoothTerminal {
     this._log(event.target.value.getUint8(9));
     this._log(event.target.value.getUint8(10));
     this._log(event.target.value.getUint8(11));
-
+    try{
     var re = event.target.value;
     var total = (re.getUint8(1) << 24 ) +  (re.getUint8(2) << 16 ) + (re.getUint8(3) << 8 ) + re.getUint8(0);
     this._log ('Total' + total);
+    }
+    catch(err){
+      this._log(err);
+    }
     // let data = new DataView(event.target.value);
     // let foo = data.getUint8(0);
     // this._log(foo);
