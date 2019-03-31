@@ -33,16 +33,7 @@ class BluetoothTerminal {
    * Set number or string representing service UUID used.
    * @param {!(number|string)} uuid - Service UUID
    */
-  setServiceUuid(uuid) {
-    if (!Number.isInteger(uuid) &&
-        !(typeof uuid === 'string' || uuid instanceof String)) {
-      throw new Error('UUID type is neither a number nor a string');
-    }
-
-    if (!uuid) {
-      throw new Error('UUID cannot be a null');
-    }
-
+  setServiceUuid(uuid) { 
     this._serviceUuid = uuid;
   }
 
@@ -50,16 +41,7 @@ class BluetoothTerminal {
    * Set number or string representing characteristic UUID used.
    * @param {!(number|string)} uuid - Characteristic UUID
    */
-  setCharacteristicUuid(uuid) {
-    if (!Number.isInteger(uuid) &&
-        !(typeof uuid === 'string' || uuid instanceof String)) {
-      throw new Error('UUID type is neither a number nor a string');
-    }
-
-    if (!uuid) {
-      throw new Error('UUID cannot be a null');
-    }
-
+  setCharacteristicUuid(uuid) {    
     this._characteristicUuid = uuid;
   }
 
@@ -240,7 +222,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code without UUID 2');
+    this._log('New Code with UUID 3');
     return navigator.bluetooth.requestDevice({
       acceptAllDevices: true
     }).
