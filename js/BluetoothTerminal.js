@@ -240,7 +240,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code without UUID');
+    this._log('New Code without UUID 2');
     return navigator.bluetooth.requestDevice({
       acceptAllDevices: true
     }).
@@ -273,14 +273,9 @@ class BluetoothTerminal {
         then((server) => {
           this._log('GATT server connected', 'Getting service...');
 
-          return server.getPrimaryService();
+          return server.getPrimaryServices();
         }).
-        then((service) => {
-          this._log('Service found', 'Getting characteristic...');
-
-          return service.getCharacteristic(this._characteristicUuid);
-        }).
-        then((characteristic) => {
+        then((services) => {
           this._log('Characteristic found');
           log('Getting Characteristics...');
               let queue = Promise.resolve();
