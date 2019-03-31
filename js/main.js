@@ -64,6 +64,7 @@ connectButton.addEventListener('click', () => {
 
 // Bind event listeners to the UI elements.
 sendDataButton.addEventListener('click', () => {
+  logToTerminal("Send My Data",'out');
   terminal.sendNew().
       then(() => logToTerminal("MyData", 'out')).
       catch((error) => logToTerminal(error));
