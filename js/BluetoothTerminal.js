@@ -351,17 +351,11 @@ class BluetoothTerminal {
   _handleCharacteristicValueChanged(event) {
     this._log("Data Received" + event.target.value);
     const value = new TextDecoder().decode(event.target.value);
-    this._log("Data Decoded" + value);
+    this._log("Data Decoded" + value.length);
     for (const c of value) {
       if(c == 21){
         this._log("Yes First is 21");        
       }
-      var t = ((c/100)%10) + 0x30; 
-      var t1 = ((c/10)%10) + 0x30; 
-      var t2 = ((c/1)%10) + 0x30; 
-      this._log("Data Decoded Single Value t" + t );
-      this._log("Data Decoded Single Value t1" + t1 );
-      this._log("Data Decoded Single Value t2" + t2 );
       if (c === this._receiveSeparator) {
         const data = this._receiveBuffer.trim();
         this._receiveBuffer = '';
