@@ -350,8 +350,8 @@ class BluetoothTerminal {
    */
   _handleCharacteristicValueChanged(event) {
     this._log("Data Received");
-    this._log(event.target.value);
-    this._log(typeof event.target.value);
+    this._log(JSON.stringify(event.target.value));
+    //this._log(typeof event.target.value);
     this._log("Data Received End");
     const value = new TextDecoder().decode(event.target.value);
     this._log("Data Decoded" + value.length);
@@ -359,7 +359,7 @@ class BluetoothTerminal {
     for (const c of value.split('')) {
       this._log("Data single" + c);
       this._log(typeof c);
-      if(c == 15){
+      if(c == 21){
         this._log("Yes First is 21");        
       }
       if (c === this._receiveSeparator) {
