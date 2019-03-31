@@ -349,11 +349,16 @@ class BluetoothTerminal {
    * @private
    */
   _handleCharacteristicValueChanged(event) {
-    this._log("Data Received" + event.target.value);
+    this._log("Data Received");
+    this._log(event.target.value);
+    this._log(typeof event.target.value);
+    this._log("Data Received End");
     const value = new TextDecoder().decode(event.target.value);
     this._log("Data Decoded" + value.length);
+    this._log(typeof value);
     for (const c of value) {
       this._log("Data single" + c);
+      this._log(typeof c);
       if(c == 15){
         this._log("Yes First is 21");        
       }
