@@ -117,11 +117,12 @@ class BluetoothTerminal {
     try{
        var buffer = new ArrayBuffer(11) // array buffer for two bytes
        var newData = new Uint8Array(buffer) // views the buffer as an array of 8 bit integers
+       var deviceId= 2000;
         newData[0] = 21;
-        newData[1] = 0;
-        newData[2] = 0;
-        newData[3] = 3;
-        newData[4] = 232;
+        newData[1] = (deviceId & 0xFF000000) >> 24;
+        newData[2] = (deviceId & 0x00FF0000) >> 16;
+        newData[3] = (deviceId & 0x0000FF00) >> 8;
+        newData[4] = (deviceId & 0xFF0000FF);
         newData[5] = 0;
         newData[6] = 0;
         newData[7] = 0;
@@ -388,6 +389,9 @@ class BluetoothTerminal {
     this._log(event.target.value.getUint8(10));
     this._log(event.target.value.getUint8(11));
 
+    var re = event.target.value;
+    var total = (re.getUint8(1) << 24 ) +  (re.getUint8(2) << 16 ) + (re.getUint8(3) << 8 ) + re.getUint8(0);
+    this._log ('Total' + total);
     // let data = new DataView(event.target.value);
     // let foo = data.getUint8(0);
     // this._log(foo);
