@@ -109,7 +109,9 @@ class BluetoothTerminal {
    * the connected device, override it to handle incoming data.
    * @param {string} data - Data
    */
-  receive(data) {
+  receive(callback) {
+    this._characteristic.addEventListener('characteristicvaluechanged', callback);		
+    this._log(callback);
     // Handle incoming data.
   }
 
@@ -222,7 +224,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 10');
+    this._log('New Code with UUID 11');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -272,11 +274,19 @@ class BluetoothTerminal {
       this._log('Characteristic found');
       this._log(characteristic.uuid);
       this._characteristic = characteristic; // Remember characteristic.
+      this._characteristic.addEventListener('characteristicvalueupdated',
+      this.handleCharacteristicValueUpdated);
 
       return this._characteristic;
     });
   }
-
+  handleCharacteristicValueUpdated(event) {
+    this._log('On Read');
+    this._log(event.target.isRead);
+    this._log(event.target.value);
+    //console.log(event.target.isRead) /* Returns true if stored value comes from a read operation */
+    //console.log(event.target.value); /* Characteristic value */
+  }
   
   _getSupportedProperties(characteristic) {
     let supportedProperties = [];
