@@ -240,7 +240,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code123456');
+    this._log('New Code120');
     return navigator.bluetooth.requestDevice({
       acceptAllDevices: true
     }).
@@ -272,17 +272,17 @@ class BluetoothTerminal {
     return device.gatt.connect().
         then((server) => {
           this._log('GATT server connected', 'Getting service...');
-          this._log(server);
+          this._log(JSON.stringify(server));
           return server.getPrimaryService();
         }).
         then((service) => {
           this._log('Service found', 'Getting characteristic...');
-          this._log(service);
+          this._log(JSON.stringify(service));
           return service.getCharacteristic();
         }).
         then((characteristic) => {
           this._log('Characteristic found');
-          this._log(characteristic);
+          this._log(JSON.stringify(characteristic));
           this._characteristic = characteristic; // Remember characteristic.
 
           return this._characteristic;
