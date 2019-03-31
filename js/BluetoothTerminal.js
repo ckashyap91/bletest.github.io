@@ -222,14 +222,15 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 500');
+    this._log('New Code with UUID 460');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
 
     //log('Requesting any Bluetooth Device...');
     return navigator.bluetooth.requestDevice({
-      acceptAllDevices: true
+      acceptAllDevices: true,
+      optionalServices: []
     }).
         then((device) => {
           this._log('"' + device.name + '" bluetooth device selected');
@@ -266,10 +267,7 @@ class BluetoothTerminal {
           this._log('Service found', 'Getting characteristic...');
           var ct;
           services.forEach(service => {
-               var ct1 = service.getCharacteristics();
-               ct1.forEach(characteristic => {
-                 ct = characteristic;
-               });
+               ct = service.getCharacteristic(this._characteristicUuid);
              });
           return ct;
         }).
