@@ -114,21 +114,23 @@ class BluetoothTerminal {
   }
 
   sendNew(){
-    var newData = [11];
-    newData[0] = 21;
-    newData[1] = 1;
-    newData[2] = 2;
-    newData[3] = 3;
-    newData[4] = 4;
-    newData[5] = 0;
-    newData[6] = 0;
-    newData[7] = 0;
-    newData[8] = 0;
-    newData[9] = 253;
-    newData[10] = 10;
+    var buffer = new ArrayBuffer(11);
+    var dataview = new DataView(buffer);
+    dataview.setInt8(1, 21);
+    dataview.setInt8(2, 1);
+    dataview.setInt8(3, 2);
+    dataview.setInt8(4, 3);
+    dataview.setInt8(5, 4);
+    dataview.setInt8(6, 0);
+    dataview.setInt8(7, 0);
+    dataview.setInt8(8, 0);
+    dataview.setInt8(9, 0);
+    dataview.setInt8(10, 253);
+    dataview.setInt8(11, 10);   
     try{
-      this._characteristic.writeValue(newData);
-      this._characteristic.writeValue( new TextEncoder().encode(newData));   
+      this._characteristic.writeValue(dataview);
+      this._log('first sent');
+      this._characteristic.writeValue( new TextEncoder().encode(dataview));   
     }
     catch(err){
       this._log(err);
