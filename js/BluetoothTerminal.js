@@ -129,9 +129,9 @@ class BluetoothTerminal {
         newData[9] = 253;
         newData[10] = 10;
       this._log("first sending new 1");
-      //this._characteristic.writeValue(newData);
+      this._characteristic.writeValue(newData);
       //this._log("first sent new");
-      this._characteristic.writeValue( new TextEncoder().encode(newData));  
+      //this._characteristic.writeValue( new TextEncoder().encode(newData));  
       this._log("first sent new"); 
     }
     catch(err){
