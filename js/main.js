@@ -29,12 +29,12 @@ const logToTerminal = (message, type = '') => {
 };
 
 // Obtain configured instance.
-const terminal = new BluetoothTerminal('6e400001-b5a3-f393-e0a9-e50e24dcca9e','6e400002-b5a3-f393-e0a9-e50e24dcca9e');
+const terminal = new BluetoothTerminal('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
 
-// // Override `receive` method to log incoming data to the terminal.
-// terminal.receive = function(data) {
-//   logToTerminal(data, 'in');
-// };
+// Override `receive` method to log incoming data to the terminal.
+terminal.receive = function(data) {
+  logToTerminal(data, 'in');
+};
 
 // Override default log method to output messages to the terminal and console.
 terminal._log = function(...messages) {
