@@ -353,13 +353,14 @@ class BluetoothTerminal {
     const value = new TextDecoder().decode(event.target.value);
     this._log("Data Decoded" + value.length);
     for (const c of value) {
-      if(c == 21){
+      this._log("Data single" + c);
+      if(c == 15){
         this._log("Yes First is 21");        
       }
       if (c === this._receiveSeparator) {
         const data = this._receiveBuffer.trim();
         this._receiveBuffer = '';
-        this._log("Data Decoded Total Data" + data);
+        //this._log("Data Decoded Total Data" + data);
         if (data) {
           this.receive(data);
         }
