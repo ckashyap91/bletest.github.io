@@ -350,9 +350,9 @@ class BluetoothTerminal {
    */
   _handleCharacteristicValueChanged(event) {
     this._log("Data Received"); 
-    let data = new DataView(event.target.value);
-    let foo = data.getUint8(0);
-    this._log(foo);
+    // let data = new DataView(event.target.value);
+    // let foo = data.getUint8(0);
+    // this._log(foo);
     const value = new TextDecoder().decode(event.target.value);  
     for (const c of value) {
       this._log("Data single" + c.charCodeAt(0));     
