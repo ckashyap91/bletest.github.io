@@ -424,7 +424,7 @@ class BluetoothTerminal {
     }
     if (command == 21) {
       this._deviceId = data;
-      var deviceFound = false;
+      var deviceFound = true;
       if (deviceFound) {
         this._sendToDevice(command, 1);
       } else {
