@@ -250,7 +250,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 501');
+    this._log('New Code with UUID 600');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -392,11 +392,20 @@ class BluetoothTerminal {
     //this._log(event.target.value.getUint8(11));
     var command = event.target.value.getUint8(0);
     var handsakeCommand = event.target.value.getUint8(9);
-    var t = event.target.value.getUint8(1);
-    var t1 = event.target.value.getUint8(2);
-    var t2 = event.target.value.getUint8(3);
-    var t3 = event.target.value.getUint8(4);
-    var total = (t << 24) + (t1 << 16) + (t2 << 8) + t3;
+    var t1 = event.target.value.getUint8(1);
+    var t2 = event.target.value.getUint8(2);
+    var t3 = event.target.value.getUint8(3);
+    var t4 = event.target.value.getUint8(4);
+    var t5 = event.target.value.getUint8(5);
+    var t6 = event.target.value.getUint8(6);
+    var t7 = event.target.value.getUint8(7);
+    var t8 = event.target.value.getUint8(8);
+    var total = (t1 << 24) + (t2 << 16) + (t3 << 8) + t4;
+
+    if (command == 21 && handsakeCommand == 253) {
+      total = (t1 << 56) + (t2 << 48) + (t3 << 40) +  (t4 << 32) + (t5 << 24) + (t6 << 16) + (t7 << 8) + t8;
+    }
+
     this._connectionDataReceive(command, total, handsakeCommand);
     // let data = new DataView(event.target.value);
     // let foo = data.getUint8(0);
@@ -475,8 +484,7 @@ class BluetoothTerminal {
       //Finish Pouring
       var lastAmount1 = data;
       this._log('Start Pouring Continue' + lastAmount1);
-    }
-    else if (command == 51) {
+    } else if (command == 51) {
       //Finish Pouring
       var lastAmount = data;
       this._log('Finish Pouring' + lastAmount);
