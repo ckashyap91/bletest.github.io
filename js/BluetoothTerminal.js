@@ -250,7 +250,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 700');
+    this._log('New Code with UUID 800');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -400,10 +400,24 @@ class BluetoothTerminal {
     var t6 = event.target.value.getUint8(6);
     var t7 = event.target.value.getUint8(7);
     var t8 = event.target.value.getUint8(8);
-    var total = (t1 << 24) + (t2 << 16) + (t3 << 8) + t4;
+    var total = 0;
 
     if (command == 21 && handsakeCommand == 253) {
+      this._log("Receive command found");
+      this._log("T1" + t1);
+      this._log("T2" + t2);
+      this._log("T3" + t3);
+      this._log("T4" + t4);
+      this._log("T5" + t5);
+      this._log("T6" + t6);
+      this._log("T7" + t7);
+      this._log("T8" + t8);
       total = (t1 << 56) + (t2 << 48) + (t3 << 40) +  (t4 << 32) + (t5 << 24) + (t6 << 16) + (t7 << 8) + t8;
+      this._log("Long device id - " + total);
+    }
+    else
+    {
+      total = (t1 << 24) + (t2 << 16) + (t3 << 8) + t4;
     }
 
     this._connectionDataReceive(command, total, handsakeCommand);
