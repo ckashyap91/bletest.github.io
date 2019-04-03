@@ -250,7 +250,7 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 600');
+    this._log('New Code with UUID 700');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
@@ -433,14 +433,14 @@ class BluetoothTerminal {
     }
     if (command == 21) {
       this._deviceId = data;
-      var deviceFound = false;
-      this._log('21 Receive');
+      var deviceFound = true;
+      this._log('21 Receive'+ data);
       if (deviceFound) {
         this._sendToDevice(command, 1);
         this._log('21 Send 1');
       } else {
         this._sendToDevice(command, 0);
-        this._log('21 Send 2');
+        this._log('21 Send 0');
       }
     } else if (command == 31) {
       this._rfIdNumber = data;
