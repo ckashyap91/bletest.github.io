@@ -250,12 +250,13 @@ class BluetoothTerminal {
    */
   _requestBluetoothDevice() {
     this._log('Requesting bluetooth device...');
-    this._log('New Code with UUID 900');
+    this._log('New Code with UUID 1000');
     // let optionalServices = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
     // .split(/, ?/).map(s => s.startsWith('0x') ? parseInt(s) : s)
     // .filter(s => s && BluetoothUUID.getService);
 
     //log('Requesting any Bluetooth Device...');
+    try {
     return navigator.bluetooth.requestDevice({
       acceptAllDevices: true,
       optionalServices: [this._serviceUuid]
@@ -269,6 +270,10 @@ class BluetoothTerminal {
 
       return this._device;
     });
+  }
+  catch(ex){
+    this._log(ex);
+  }
   }
 
   /**
